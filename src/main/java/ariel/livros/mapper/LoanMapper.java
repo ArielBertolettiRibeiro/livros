@@ -1,11 +1,9 @@
 package ariel.livros.mapper;
 
 import ariel.livros.domain.entity.Loan;
-import ariel.livros.domain.entity.Student;
 import ariel.livros.dto.books.BookSummary;
 import ariel.livros.dto.loans.LoanResponse;
 import ariel.livros.dto.loans.LoanSummary;
-import ariel.livros.dto.students.StudentResponse;
 import ariel.livros.dto.students.StudentSummary;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

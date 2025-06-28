@@ -1,7 +1,14 @@
 package ariel.livros.dto.students;
 
-public record StudentResponse(
-        Long id,
-        String name,
-        String registration
-) {}
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class StudentResponse{
+    private Long id;
+    private String name;
+    private String registration;
+}

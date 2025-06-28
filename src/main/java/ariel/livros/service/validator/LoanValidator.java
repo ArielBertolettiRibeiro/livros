@@ -1,6 +1,7 @@
 package ariel.livros.service.validator;
 
 import ariel.livros.domain.entity.Book;
+import ariel.livros.domain.entity.Loan;
 import ariel.livros.domain.entity.Student;
 import ariel.livros.repository.LoanRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +32,15 @@ public class LoanValidator {
         }
 
         book.setAvailableQuantity(book.getAvailableQuantity() - 1);
+    }
+
+    public void returnBook(Book book) {
+        book.setAvailableQuantity(book.getAvailableQuantity() + 1);
+    }
+
+    public void isActiveLoan(Loan loan){
+        if (!loan.isActive()) {
+            throw new RuntimeException("Livro já foi devolvido!");
+        }
     }
 }

@@ -23,8 +23,8 @@ public class BookServiceImpl implements IBookService {
 
     @Transactional
     @Override
-    public BookResponse creat(BookRequest request) {
-        repository.findByTitleIgnoreCaseAndAuthorIgnoreCase(request.title(), request.author())
+    public BookResponse create(BookRequest request) {
+        repository.findByTitleIgnoreCaseAndAuthorIgnoreCase(request.getTitle(), request.getAuthor())
                 .ifPresent(book -> {
                     throw new RuntimeException("Livro já existe!");
                 });
@@ -54,9 +54,9 @@ public class BookServiceImpl implements IBookService {
         Book book = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Id não encontrado!"));
 
-        book.setAuthor(request.author());
-        book.setTitle(request.title());
-        book.setPublicationYear(request.publicationYear());
+        book.setAuthor(request.getAuthor());
+        book.setTitle(request.getTitle());
+        book.setPublicationYear(request.getPublicationYear());
 
         return mapper.toResponse(repository.save(book));
     }

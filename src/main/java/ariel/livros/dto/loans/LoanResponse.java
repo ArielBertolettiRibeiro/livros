@@ -1,17 +1,21 @@
 package ariel.livros.dto.loans;
 
-import ariel.livros.domain.entity.Student;
-import ariel.livros.dto.books.BookResponse;
 import ariel.livros.dto.books.BookSummary;
 import ariel.livros.dto.students.StudentSummary;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-public record LoanResponse(
-        Long id,
-        StudentSummary student,
-        BookSummary bookSummary,
-        LocalDate loanDate,
-        LocalDate returnDate,
-        boolean active
-) {}
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class LoanResponse {
+    private Long id;
+    private StudentSummary student;
+    private BookSummary bookSummary;
+    private LocalDate loanDate;
+    private LocalDate returnDate;
+    private boolean active;
+}

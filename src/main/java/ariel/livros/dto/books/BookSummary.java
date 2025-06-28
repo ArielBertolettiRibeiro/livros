@@ -1,7 +1,14 @@
 package ariel.livros.dto.books;
 
-public record BookSummary(
-       Long id,
-       String title,
-       String author
-) {}
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class BookSummary {
+    private Long id;
+    private String title;
+    private String author;
+}

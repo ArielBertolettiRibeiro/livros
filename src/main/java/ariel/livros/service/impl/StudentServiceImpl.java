@@ -3,6 +3,7 @@ package ariel.livros.service.impl;
 import ariel.livros.domain.entity.Student;
 import ariel.livros.dto.students.StudentRequest;
 import ariel.livros.dto.students.StudentResponse;
+import ariel.livros.dto.students.StudentSummary;
 import ariel.livros.dto.students.StudentUpdateRequest;
 import ariel.livros.mapper.StudentMapper;
 import ariel.livros.repository.StudentRepository;
@@ -23,7 +24,7 @@ public class StudentServiceImpl implements IStudentService {
     @Transactional
     @Override
     public StudentResponse create(StudentRequest request) {
-        repository.findByRegistration(request.registration())
+        repository.findByRegistration(request.getRegistration())
                 .ifPresent(students -> {
                     throw new RuntimeException("Aluno já existe!");
                 });
@@ -41,9 +42,9 @@ public class StudentServiceImpl implements IStudentService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<StudentResponse> findAll(Pageable pageable) {
+    public Page<StudentSummary> findAll(Pageable pageable) {
         Page<Student> students = repository.findAll(pageable);
-        return students.map(mapper::toResponse);
+        return students.map(mapper::toSummary);
     }
 
     @Transactional
@@ -52,7 +53,7 @@ public class StudentServiceImpl implements IStudentService {
         Student student = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student não encontrado"));
 
-        student.setName(request.name());
+        student.setName(request.getName());
 
         return mapper.toResponse(repository.save(student));
     }

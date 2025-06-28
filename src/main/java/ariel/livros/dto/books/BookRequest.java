@@ -1,8 +1,15 @@
 package ariel.livros.dto.books;
 
-public record BookRequest(
-        String title,
-        String author,
-        Integer publicationYear,
-        Integer availableQuantity
-) {}
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class BookRequest {
+    private String title;
+    private String author;
+    private Integer publicationYear;
+    private Integer availableQuantity;
+}

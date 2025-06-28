@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface IBookService {
 
-    BookResponse creat(BookRequest request);
+    BookResponse create(BookRequest request);
 
     BookResponse findById(Long id);
 
