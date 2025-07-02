@@ -5,6 +5,8 @@ import ariel.livros.dto.books.BookRequest;
 import ariel.livros.dto.books.BookResponse;
 import ariel.livros.dto.books.BookSummary;
 import ariel.livros.dto.books.BookUpdateRequest;
+import ariel.livros.exception.BookNotFoundException;
+import ariel.livros.exception.DuplicationBookException;
 import ariel.livros.mapper.BookMapper;
 import ariel.livros.repository.BookRepository;
 import ariel.livros.service.interfaces.IBookService;
@@ -26,7 +28,7 @@ public class BookServiceImpl implements IBookService {
     public BookResponse create(BookRequest request) {
         repository.findByTitleIgnoreCaseAndAuthorIgnoreCase(request.getTitle(), request.getAuthor())
                 .ifPresent(book -> {
-                    throw new RuntimeException("Livro já existe!");
+                    throw new DuplicationBookException("Livro já existe!");
                 });
 
         return mapper.toResponse(repository.save(mapper.toEntity(request)));
@@ -37,7 +39,7 @@ public class BookServiceImpl implements IBookService {
     public BookResponse findById(Long id) {
         return repository.findById(id)
                 .map(mapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("id não encontrado!"));
+                .orElseThrow(() -> new BookNotFoundException("id não encontrado!"));
     }
 
     @Transactional(readOnly = true)
@@ -52,7 +54,7 @@ public class BookServiceImpl implements IBookService {
     @Override
     public BookResponse update(Long id, BookUpdateRequest request) {
         Book book = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Id não encontrado!"));
+                .orElseThrow(() -> new BookNotFoundException("Id não encontrado!"));
 
         book.setAuthor(request.getAuthor());
         book.setTitle(request.getTitle());
@@ -65,7 +67,7 @@ public class BookServiceImpl implements IBookService {
     @Override
     public void delete(Long id) {
         if (!repository.existsById(id)){
-            throw new RuntimeException("Id não encontrado");
+            throw new BookNotFoundException("Id não encontrado");
         }
         repository.deleteById(id);
     }

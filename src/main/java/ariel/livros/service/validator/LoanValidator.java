@@ -3,6 +3,9 @@ package ariel.livros.service.validator;
 import ariel.livros.domain.entity.Book;
 import ariel.livros.domain.entity.Loan;
 import ariel.livros.domain.entity.Student;
+import ariel.livros.exception.BookUnavailableException;
+import ariel.livros.exception.LoanAlreadyReturnedException;
+import ariel.livros.exception.StudentLoanLimitedExceededException;
 import ariel.livros.repository.LoanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,20 +18,20 @@ public class LoanValidator {
 
     public void validateBookAvailability(Book book) {
         if (book.getAvailableQuantity() <= 0) {
-            throw new RuntimeException("Livro indisponível para empréstimo!");
+            throw new BookUnavailableException("Livro indisponível para empréstimo!");
         }
     }
 
     public void validateStudentLoanLimit(Student student) {
         int activeLoans = repository.countByStudentAndActiveTrue(student);
         if (activeLoans >= 5) {
-            throw new RuntimeException("Estudante atingiu o limite de empréstimos!");
+            throw new StudentLoanLimitedExceededException("Estudante atingiu o limite de empréstimos!");
         }
     }
 
     public void reserveBook(Book book) {
         if (book.getAvailableQuantity() <= 0) {
-            throw new RuntimeException("Livro indisponível!");
+            throw new BookUnavailableException("Livro indisponível!");
         }
 
         book.setAvailableQuantity(book.getAvailableQuantity() - 1);
@@ -40,7 +43,7 @@ public class LoanValidator {
 
     public void isActiveLoan(Loan loan){
         if (!loan.isActive()) {
-            throw new RuntimeException("Livro já foi devolvido!");
+            throw new LoanAlreadyReturnedException("Livro já foi devolvido!");
         }
     }
 }

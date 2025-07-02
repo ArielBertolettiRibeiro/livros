@@ -5,6 +5,8 @@ import ariel.livros.dto.students.StudentRequest;
 import ariel.livros.dto.students.StudentResponse;
 import ariel.livros.dto.students.StudentSummary;
 import ariel.livros.dto.students.StudentUpdateRequest;
+import ariel.livros.exception.DuplicationStudentException;
+import ariel.livros.exception.StudentNotFoundException;
 import ariel.livros.mapper.StudentMapper;
 import ariel.livros.repository.StudentRepository;
 import ariel.livros.service.interfaces.IStudentService;
@@ -26,7 +28,7 @@ public class StudentServiceImpl implements IStudentService {
     public StudentResponse create(StudentRequest request) {
         repository.findByRegistration(request.getRegistration())
                 .ifPresent(students -> {
-                    throw new RuntimeException("Aluno já existe!");
+                    throw new DuplicationStudentException("Aluno já existe!");
                 });
 
         return mapper.toResponse(repository.save(mapper.toEntity(request)));
@@ -37,7 +39,7 @@ public class StudentServiceImpl implements IStudentService {
     public StudentResponse findById(Long id) {
         return repository.findById(id)
                 .map(mapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Id não encontrado"));
+                .orElseThrow(() -> new StudentNotFoundException("Id não encontrado"));
     }
 
     @Transactional(readOnly = true)
@@ -51,7 +53,7 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     public StudentResponse update(Long id, StudentUpdateRequest request) {
         Student student = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student não encontrado"));
+                .orElseThrow(() -> new StudentNotFoundException("Student não encontrado"));
 
         student.setName(request.getName());
 
@@ -62,7 +64,7 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     public void delete(Long id) {
         if (!repository.existsById(id)){
-            throw new RuntimeException("Id não encontrado!");
+            throw new StudentNotFoundException("Id não encontrado!");
         }
         repository.deleteById(id);
     }

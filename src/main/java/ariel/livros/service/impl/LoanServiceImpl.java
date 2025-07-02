@@ -6,6 +6,9 @@ import ariel.livros.domain.entity.Student;
 import ariel.livros.dto.loans.LoanRequest;
 import ariel.livros.dto.loans.LoanResponse;
 import ariel.livros.dto.loans.LoanSummary;
+import ariel.livros.exception.BookNotFoundException;
+import ariel.livros.exception.LoanNotFoundExcpetion;
+import ariel.livros.exception.StudentNotFoundException;
 import ariel.livros.mapper.LoanMapper;
 import ariel.livros.repository.BookRepository;
 import ariel.livros.repository.LoanRepository;
@@ -32,10 +35,10 @@ public class LoanServiceImpl implements ILoanService {
     @Override
     public LoanResponse create(LoanRequest request) {
         Student student = studentRepository.findById(request.getStudent())
-                .orElseThrow(() -> new RuntimeException("Estudante não encontrado!"));
+                .orElseThrow(() -> new StudentNotFoundException("Estudante não encontrado!"));
 
         Book book = bookRepository.findById(request.getBook())
-                .orElseThrow(() -> new RuntimeException("Livro não encontrado!"));
+                .orElseThrow(() -> new BookNotFoundException("Livro não encontrado!"));
 
         validator.validateBookAvailability(book);
         validator.validateStudentLoanLimit(student);
@@ -55,14 +58,14 @@ public class LoanServiceImpl implements ILoanService {
     public LoanResponse findById(Long id) {
         return repository.findById(id)
                 .map(mapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Id não encontrado!"));
+                .orElseThrow(() -> new LoanNotFoundExcpetion("Id não encontrado!"));
     }
 
     @Transactional
     @Override
     public void returnLoan(Long id) {
         Loan loan = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado!"));
+                .orElseThrow(() -> new LoanNotFoundExcpetion("Empréstimo não encontrado!"));
 
         validator.isActiveLoan(loan);
         loan.setActive(false);
@@ -78,7 +81,7 @@ public class LoanServiceImpl implements ILoanService {
     @Override
     public List<LoanSummary> findAll(Long studentId) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Estudante não encontrado!"));
+                .orElseThrow(() -> new StudentNotFoundException("Estudante não encontrado!"));
 
         List<Loan> loans = repository.findByStudentAndActiveTrue(student);
 
