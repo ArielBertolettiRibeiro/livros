@@ -14,7 +14,9 @@ import ariel.livros.repository.BookRepository;
 import ariel.livros.repository.LoanRepository;
 import ariel.livros.repository.StudentRepository;
 import ariel.livros.service.interfaces.ILoanService;
-import ariel.livros.service.validator.LoanValidator;
+import ariel.livros.service.validator.book.BookValidatorExecute;
+import ariel.livros.service.validator.loan.LoanValidatorExecute;
+import ariel.livros.service.validator.student.StudentValidatorExecute;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +31,10 @@ public class LoanServiceImpl implements ILoanService {
     private final LoanMapper mapper;
     private final StudentRepository studentRepository;
     private final BookRepository bookRepository;
-    private final LoanValidator validator;
+    private final LoanValidatorExecute loanValidatorExecute;
+    private final BookValidatorExecute bookValidatorExecute;
+    private final BookServiceImpl bookService;
+    private final StudentValidatorExecute studentValidatorExecute;
 
     @Transactional
     @Override
@@ -40,8 +45,8 @@ public class LoanServiceImpl implements ILoanService {
         Book book = bookRepository.findById(request.getBook())
                 .orElseThrow(() -> new BookNotFoundException("Livro não encontrado!"));
 
-        validator.validateBookAvailability(book);
-        validator.validateStudentLoanLimit(student);
+        bookValidatorExecute.validateAll(book);
+        studentValidatorExecute.validateAll(student);
 
         Loan loan = new Loan();
         loan.setStudent(student);
@@ -49,7 +54,7 @@ public class LoanServiceImpl implements ILoanService {
         loan.setLoanDate(LocalDate.now());
         loan.setActive(true);
 
-        validator.reserveBook(book);
+        bookService.reserve(book);
         return mapper.toResponse(repository.save(loan));
     }
 
@@ -67,12 +72,12 @@ public class LoanServiceImpl implements ILoanService {
         Loan loan = repository.findById(id)
                 .orElseThrow(() -> new LoanNotFoundExcpetion("Empréstimo não encontrado!"));
 
-        validator.isActiveLoan(loan);
+        loanValidatorExecute.validateAll(loan);
         loan.setActive(false);
         loan.setReturnDate(LocalDate.now());
 
         Book book = loan.getBook();
-        validator.returnBook(book);
+        bookService.returnBook(book);
 
         repository.save(loan);
     }

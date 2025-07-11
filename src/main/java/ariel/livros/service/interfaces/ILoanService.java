@@ -3,9 +3,6 @@ package ariel.livros.service.interfaces;
 import ariel.livros.dto.loans.LoanRequest;
 import ariel.livros.dto.loans.LoanResponse;
 import ariel.livros.dto.loans.LoanSummary;
-import ariel.livros.dto.students.StudentSummary;
-import org.springframework.data.domain.Page;
-
 import java.util.List;
 
 public interface ILoanService {

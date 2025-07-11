@@ -1,5 +1,6 @@
 package ariel.livros.service.interfaces;
 
+import ariel.livros.domain.entity.Book;
 import ariel.livros.dto.books.BookRequest;
 import ariel.livros.dto.books.BookResponse;
 import ariel.livros.dto.books.BookSummary;
@@ -18,4 +19,8 @@ public interface IBookService {
     BookResponse update(Long id, BookUpdateRequest request);
 
     void delete(Long id);
+
+    void reserve(Book book);
+
+    void returnBook(Book book);
 }

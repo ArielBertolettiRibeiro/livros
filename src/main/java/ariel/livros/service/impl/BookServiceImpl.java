@@ -6,6 +6,7 @@ import ariel.livros.dto.books.BookResponse;
 import ariel.livros.dto.books.BookSummary;
 import ariel.livros.dto.books.BookUpdateRequest;
 import ariel.livros.exception.BookNotFoundException;
+import ariel.livros.exception.BookUnavailableException;
 import ariel.livros.exception.DuplicationBookException;
 import ariel.livros.mapper.BookMapper;
 import ariel.livros.repository.BookRepository;
@@ -70,5 +71,19 @@ public class BookServiceImpl implements IBookService {
             throw new BookNotFoundException("Id não encontrado");
         }
         repository.deleteById(id);
+    }
+
+    @Override
+    public void reserve(Book book) {
+        if (book.getAvailableQuantity() <= 0) {
+            throw new BookUnavailableException("Livro indisponível!");
+        }
+
+        book.setAvailableQuantity(book.getAvailableQuantity() - 1);
+    }
+
+    @Override
+    public void returnBook(Book book) {
+        book.setAvailableQuantity(book.getAvailableQuantity() + 1);
     }
 }
